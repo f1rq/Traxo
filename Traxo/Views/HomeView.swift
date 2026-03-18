@@ -11,7 +11,6 @@ struct HomeView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
-                    
                     VStack(alignment: .leading, spacing: 2) {
                         Text(Date.now, format: .dateTime.weekday(.wide).day().month(.wide))
                             .font(.subheadline)
@@ -21,12 +20,30 @@ struct HomeView: View {
                             .fontWeight(.bold)
                     }
                     
-                    
                     StartRideCard()
+                    
+                    VStack(alignment: .leading, spacing: 12) {
+                        SectionHeader(title: "Your garage")
+                        
+                        BikeCard(name: "Honda Rebel 125", desc: "Last ride: 3 days ago")
+                        BikeCard(name: "BMW S1000RR", desc: "Oil change due")
+                    }
                 }
                 .padding(.horizontal)
             }
         }
+    }
+}
+
+struct SectionHeader: View {
+    let title: String
+    
+    var body: some View {
+        Text(title)
+            .font(.subheadline)
+            .fontWeight(.semibold)
+            .foregroundStyle(.secondary)
+            .textCase(.uppercase)
     }
 }
 
@@ -44,10 +61,10 @@ struct StartRideCard: View {
                         .foregroundStyle(.white)
                 }
                 Spacer()
-                Image(systemName: "motorcycle")
+                Image(systemName: "play.fill")
                     .font(.title)
                     .foregroundStyle(.white)
-                    .padding()
+                    .frame(width: 64, height: 64)
                     .background(Color.primary.opacity(0.3))
                     .clipShape(Circle())
             }
