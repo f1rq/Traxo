@@ -1,5 +1,5 @@
 //
-//  BikeCard.swift
+//  HomeBikeCard.swift
 //  Traxo
 //
 //  Created by Fabio Czudaj on 18/03/2026.
@@ -7,9 +7,10 @@
 
 import SwiftUI
 
-struct BikeCard: View {
+struct HomeBikeCard: View {
     let name: String
     let desc: String
+    let descType: String
     
     var body: some View {
         NavigationLink(destination: BikeDetailView(name: name, desc: desc)) {
@@ -28,7 +29,7 @@ struct BikeCard: View {
                         .foregroundStyle(.primary)
                     Text(desc)
                         .font(.subheadline)
-                        .foregroundStyle(.primary.opacity(0.8))
+                        .foregroundStyle(descType == "warning" ? .red : .primary.opacity(0.8))
                 }
                 Spacer()
             }
@@ -37,9 +38,13 @@ struct BikeCard: View {
         .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 20))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color(.separator), lineWidth: 1)
+        )
     }
 }
 
 #Preview {
-    BikeCard(name: "Honda Rebel 125", desc: "Last ride: 3 days ago")
+    HomeBikeCard(name: "Honda Rebel 125", desc: "Last ride: 3 days ago", descType: "normal")
 }

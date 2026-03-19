@@ -6,12 +6,12 @@
 //
 import SwiftUI
 
-struct ProfileView: View {
+struct SettingsView: View {
     var body: some View {
-        Text("Profile")
+        Text("Settings")
     }
 }
 
 #Preview {
-    ProfileView()
+    SettingsView()
 }
