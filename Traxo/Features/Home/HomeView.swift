@@ -91,8 +91,10 @@ struct SectionHeader: View {
 }
 
 struct StartRideCard: View {
+    @State private var showRecordSheet = false
+    
     var body: some View {
-        Button(action: {}) {
+        Button(action: { showRecordSheet = true }) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Ready to ride?")
@@ -115,6 +117,9 @@ struct StartRideCard: View {
         .padding()
         .background(Color.accentColor)
         .clipShape(RoundedRectangle(cornerRadius: 20))
+        .sheet(isPresented: $showRecordSheet) {
+            RecordView()
+        }
     }
 }
 
