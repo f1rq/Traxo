@@ -8,24 +8,37 @@
 import Foundation
 import Observation
 
+enum RideState {
+    case idle
+    case running
+    case paused
+}
+
 @Observable
 class RideViewModel {
     var elapsedSeconds: Int = 0
-    var isRunning: Bool = false
+    var state: RideState = .idle
     
     private var timer: Timer?
     
     func start() {
-        isRunning = true
+        state = .running
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             self.elapsedSeconds += 1
         }
     }
     
-    func stop() {
-        isRunning = false
+    func pause() {
+        state = .paused
         timer?.invalidate()
         timer = nil
+    }
+    
+    func stop() {
+        state = .idle
+        timer?.invalidate()
+        timer = nil
+        elapsedSeconds = 0
     }
     
     var formattedTime: String {
