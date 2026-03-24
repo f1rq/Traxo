@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct RecordView: View {
-    @State private var vm = RideViewModel()
+    let vm: RideViewModel
     
     var body: some View {
         ZStack {
@@ -92,8 +92,4 @@ struct RecordView: View {
         }
         .padding(.horizontal)
     }
-}
-
-#Preview {
-    RecordView()
 }

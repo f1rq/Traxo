@@ -8,6 +8,8 @@ import SwiftUI
 
 struct HomeView: View {
     @Binding var selectedTab: Int
+    let vm: RideViewModel
+    @Binding var showRecordSheet: Bool
     
     var body: some View {
         NavigationStack {
@@ -22,7 +24,7 @@ struct HomeView: View {
                             .fontWeight(.bold)
                     }
                     
-                    StartRideCard()
+                    StartRideCard(vm: vm, showSheet: $showRecordSheet)
                     
                     VStack(alignment: .leading, spacing: 12) {
                         SectionHeader(title: "Your garage", action: .switchTab($selectedTab, to: 2))
@@ -50,10 +52,11 @@ struct HomeView: View {
 }
 
 struct StartRideCard: View {
-    @State private var showRecordSheet = false
+    let vm: RideViewModel
+    @Binding var showSheet: Bool
     
     var body: some View {
-        Button(action: { showRecordSheet = true }) {
+        Button(action: { showSheet = true }) {
             HStack {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Ready to ride?")
@@ -76,12 +79,12 @@ struct StartRideCard: View {
         .padding()
         .background(Color.accentColor)
         .clipShape(RoundedRectangle(cornerRadius: 20))
-        .sheet(isPresented: $showRecordSheet) {
-            RecordView()
+        .sheet(isPresented: $showSheet) {
+            RecordView(vm: vm)
         }
     }
 }
 
 #Preview {
-    HomeView(selectedTab: .constant(0))
+    HomeView(selectedTab: .constant(0), vm: RideViewModel(), showRecordSheet: .constant(false))
 }
