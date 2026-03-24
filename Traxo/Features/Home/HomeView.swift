@@ -79,9 +79,6 @@ struct StartRideCard: View {
         .padding()
         .background(Color.accentColor)
         .clipShape(RoundedRectangle(cornerRadius: 20))
-        .sheet(isPresented: $showSheet) {
-            RecordView(vm: vm)
-        }
     }
 }
 
