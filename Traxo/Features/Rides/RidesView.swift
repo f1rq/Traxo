@@ -13,3 +13,7 @@ struct RidesView: View {
             .navigationTitle("Your rides")
     }
 }
+
+#Preview {
+    RidesView()
+}

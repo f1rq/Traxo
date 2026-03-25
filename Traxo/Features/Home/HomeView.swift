@@ -41,7 +41,10 @@ struct HomeView: View {
                                 HomeRidesCard(name: "87 km", desc: "Mar 14 - 1h 32m")
                                 HomeRidesCard(name: "124 km", desc: "Mar 10 - 2h 15m")
                                 HomeRidesCard(name: "43 km", desc: "Mar 06 - 45m")
-                            }
+                            }                            
+                        }
+                        ForEach(vm.rides) { ride in
+                            Text("\(ride.distance, specifier: "%.1f") km in \(ride.duration)s")
                         }
                     }
                 }
