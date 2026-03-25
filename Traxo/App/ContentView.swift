@@ -41,7 +41,7 @@ struct ContentView: View {
             }
             
             if vm.state != .idle {
-                MiniRidePlayer(vm: vm, showSheet: $showRecordSheet)
+                RideStatusBar(vm: vm, showSheet: $showRecordSheet)
                     .padding(.horizontal)
                     .padding(.bottom, 59)
             }

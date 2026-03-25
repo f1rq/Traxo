@@ -1,5 +1,5 @@
 //
-//  MiniRidePlayer.swift
+//  RideStatusBar.swift
 //  Traxo
 //
 //  Created by Fabio Czudaj on 24/03/2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct MiniRidePlayer: View {
+struct RideStatusBar: View {
     let vm: RideViewModel
     @Binding var showSheet: Bool
     @Environment(\.scenePhase) private var scenePhase
@@ -151,5 +151,5 @@ private struct AnimatedLiquidBorder: View {
 }
 
 #Preview {
-    MiniRidePlayer(vm: RideViewModel(), showSheet: .constant(true))
+    RideStatusBar(vm: RideViewModel(), showSheet: .constant(true))
 }
