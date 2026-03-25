@@ -47,7 +47,11 @@ struct MiniRidePlayer: View {
                         .drawingGroup()
                 )
             }
-            .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 24))
+            .background(
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(.ultraThickMaterial)
+            )
+            .glassEffect(.clear.interactive(), in: RoundedRectangle(cornerRadius: 24))
             .buttonStyle(.plain)
         }
         .onChange(of: showSheet) { oldValue, newValue in
