@@ -10,7 +10,6 @@ import SwiftUI
 struct MiniRidePlayer: View {
     let vm: RideViewModel
     @Binding var showSheet: Bool
-    @State private var animationRotation: Double = 0
     @Environment(\.scenePhase) private var scenePhase
     @State private var borderRefreshID: Int = 0
     
@@ -56,7 +55,7 @@ struct MiniRidePlayer: View {
                 borderRefreshID &+= 1
             }
         }
-        .onChange(of: scenePhase) { oldValue, newValue in
+        .onChange(of: scenePhase) { _, newValue in
             if newValue == .active {
                 borderRefreshID &+= 1
             }
@@ -67,9 +66,48 @@ struct MiniRidePlayer: View {
 private struct AnimatedLiquidBorder: View {
     let cornerRadius: CGFloat
     let isRunning: Bool
-    @State private var phase: Double = 0
+
+    private let period: TimeInterval = 5.0
+
+    @State private var accumulated: TimeInterval = 0
+    @State private var lastStart: Date? = nil
 
     var body: some View {
+        TimelineView(.animation) { context in
+            let now = context.date
+
+            let effectiveElapsed: TimeInterval = {
+                if isRunning, let lastStart {
+                    return accumulated + now.timeIntervalSince(lastStart)
+                } else {
+                    return accumulated
+                }
+            }()
+
+            let phase = (effectiveElapsed.truncatingRemainder(dividingBy: period) / period) * 360.0
+            border(phase: phase)
+        }
+        .allowsHitTesting(false)
+        .onAppear {
+            if isRunning {
+                lastStart = Date()
+            }
+        }
+        .onChange(of: isRunning) { _, newValue in
+            let now = Date()
+            if newValue {
+                lastStart = now
+            } else {
+                if let lastStart {
+                    accumulated += now.timeIntervalSince(lastStart)
+                }
+                self.lastStart = nil
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func border(phase: Double) -> some View {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
             .strokeBorder(
                 AngularGradient(
@@ -105,26 +143,6 @@ private struct AnimatedLiquidBorder: View {
                     .opacity(0.8)
                     .shadow(color: Color.accentColor.opacity(0.35), radius: 6, x: 0, y: 0)
             )
-            .allowsHitTesting(false)
-            .onAppear {
-                if isRunning {
-                    phase = 0
-                    withAnimation(.linear(duration: 5).repeatForever(autoreverses: false)) {
-                        phase = 360
-                    }
-                }
-            }
-            .onChange(of: isRunning) { oldValue, newValue in
-                if newValue {                    phase = 0
-                    withAnimation(.linear(duration: 5).repeatForever(autoreverses: false)) {
-                        phase = 360
-                    }
-                } else {
-                    withAnimation(.none) {
-                        phase = phase
-                    }
-                }
-            }
     }
 }
 
