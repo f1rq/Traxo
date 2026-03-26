@@ -6,11 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RidesView: View {
+    @Query(sort: \Ride.date, order: .reverse)
+    private var rides: [Ride]
+    
     var body: some View {
-        Text("Your rides")
-            .navigationTitle("Your rides")
+        ScrollView {
+            LazyVStack(spacing: 12) {
+                ForEach(rides) { ride in
+                    RideCard(ride: ride)
+                }
+            }
+            .padding(.horizontal)
+        }
+        .navigationTitle("Your rides")
     }
 }
 
