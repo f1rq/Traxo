@@ -45,4 +45,15 @@ extension Ride {
         
         return formatter.string(from: date)
     }
+    
+    var shortFormattedDate: String {
+        let calendar = Calendar.current
+        let rideYear = calendar.component(.year, from: date)
+        let currentYear = calendar.component(.year, from: Date())
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = (rideYear == currentYear) ? "dd MMM, HH:mm" : "dd MMM yyyy, HH:mm"
+        
+        return formatter.string(from: date)
+    }
 }
