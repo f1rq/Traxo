@@ -5,11 +5,15 @@
 //  Created by Fabio Czudaj on 17/03/2026.
 //
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
     @Binding var selectedTab: Int
     let vm: RideViewModel
     @Binding var showRecordSheet: Bool
+    
+    @Query(sort: \Ride.date, order: .reverse)
+    private var rides: [Ride]
     
     var body: some View {
         NavigationStack {
@@ -43,7 +47,7 @@ struct HomeView: View {
                                 HomeRidesCard(name: "43 km", desc: "Mar 06 - 45m")
                             }                            
                         }
-                        ForEach(vm.rides) { ride in
+                        ForEach(rides) { ride in
                             Text("\(ride.distance, specifier: "%.1f") km in \(ride.duration)s")
                         }
                     }

@@ -6,9 +6,11 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct RecordView: View {
     let vm: RideViewModel
+    @Environment(\.modelContext) private var context
     
     var body: some View {
         ZStack {
@@ -35,7 +37,11 @@ struct RecordView: View {
                     }
                 case .running:
                     HStack(spacing: 16) {
-                        Button(action: { vm.stop() }) {
+                        Button(action: {
+                            if let ride = vm.stop() {
+                                context.insert(ride)
+                            }
+                        }) {
                             Image(systemName: "stop.fill")
                                 .foregroundStyle(.primary)
                                 .frame(width: 64, height: 64)
@@ -62,7 +68,11 @@ struct RecordView: View {
                     }
                 case .paused:
                     HStack(spacing: 16) {
-                        Button(action: { vm.stop() }) {
+                        Button(action: {
+                            if let ride = vm.stop() {
+                                context.insert(ride)
+                            }
+                        }) {
                             Image(systemName: "stop.fill")
                                 .foregroundStyle(.primary)
                                 .frame(width: 64, height: 64)

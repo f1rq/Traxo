@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct TraxoApp: App {
@@ -13,5 +14,6 @@ struct TraxoApp: App {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: Ride.self)
     }
 }

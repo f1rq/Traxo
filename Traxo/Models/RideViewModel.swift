@@ -14,19 +14,10 @@ enum RideState {
     case paused
 }
 
-struct Ride: Identifiable, Codable {
-    var id = UUID()
-    let distance: Double
-    let duration: Int
-    let date: Date
-}
-
 @Observable
 class RideViewModel {
     var elapsedSeconds: Int = 0
     var state: RideState = .idle
-    
-    var rides: [Ride] = []
     
     private var timer: Timer?
     
@@ -45,22 +36,22 @@ class RideViewModel {
         timer = nil
     }
     
-    func stop() {
+    func stop() -> Ride? {
         timer?.invalidate()
         timer = nil
         
+        var savedRide: Ride? = nil
         if elapsedSeconds > 0 {
-            let newRide = Ride(
+            savedRide = Ride(
                 distance: Double.random(in: 1...20),
                 duration: elapsedSeconds,
                 date: Date()
             )
-            
-            rides.insert(newRide, at: 0)
         }
         
         elapsedSeconds = 0
         state = .idle
+        return savedRide
     }
     
     var formattedTime: String {
