@@ -48,6 +48,11 @@ struct HomeView: View {
                             }                            
                         }
                     }
+                    
+                    NavigationLink(destination: DebugRidesView()) {
+                        Text("Debug Rides")
+                    }
+                    .background(Color.red.opacity(0.1))
                 }
                 .padding(.horizontal)
             }
