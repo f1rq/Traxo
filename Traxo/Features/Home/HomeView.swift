@@ -42,10 +42,10 @@ struct HomeView: View {
                         
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
-                                MiniRideCard(name: "87 km", desc: "Mar 14 - 1h 32m")
-                                MiniRideCard(name: "124 km", desc: "Mar 10 - 2h 15m")
-                                MiniRideCard(name: "43 km", desc: "Mar 06 - 45m")
-                            }                            
+                                ForEach(rides.prefix(5)) { ride in
+                                    MiniRideCard(ride: ride)
+                                }
+                            }
                         }
                     }
                     

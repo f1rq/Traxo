@@ -11,7 +11,7 @@ struct RideCard: View {
     let ride: Ride
     
     var body: some View {
-        NavigationLink(destination: RideView(name: ride.title, desc: ride.formattedDate)) {
+        NavigationLink(destination: RideView(name: ride.title)) {
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
                     Text(ride.title)

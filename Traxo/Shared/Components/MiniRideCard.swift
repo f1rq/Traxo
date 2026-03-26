@@ -8,18 +8,20 @@
 import SwiftUI
 
 struct MiniRideCard: View {
-    let name: String
-    let desc: String
+    let ride: Ride
     
     var body: some View {
-        NavigationLink(destination: RideView(name: name, desc: desc)) {
+        NavigationLink(destination: RideView(name: ride.title)) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(name)
-                    .font(.title2)
+                Text(ride.title)
+                    .font(.title3)
                     .bold()
-                    .foregroundStyle(.primary)
-                Text(desc)
-                    .font(.caption)
+                    .lineLimit(1)
+                    .truncationMode(.tail)
+                Text(ride.formattedDistance)
+                    .font(.subheadline)
+                Text(ride.shortFormattedDate)
+                    .font(.subheadline)
             }
             .frame(width: 120, alignment: .leading)
             .padding()
@@ -32,8 +34,4 @@ struct MiniRideCard: View {
                 .stroke(Color(.separator), lineWidth: 1)
         )
     }
-}
-
-#Preview {
-    MiniRideCard(name: "87 km", desc: "Mar 14 - 1h 32m")
 }

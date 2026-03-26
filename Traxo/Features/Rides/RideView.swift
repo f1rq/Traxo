@@ -9,7 +9,6 @@ import SwiftUI
 
 struct RideView: View {
     let name: String
-    let desc: String
     
     var body: some View {
         Text(name)
