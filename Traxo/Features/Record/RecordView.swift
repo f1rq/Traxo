@@ -20,9 +20,9 @@ struct RecordView: View {
                         .font(.system(size: 72))
                 }
                 HStack(spacing: 16) {
-                    StatsCard(type: .distance, value: 0.0)
-                    StatsCard(type: .speed, value: 0)
-                    StatsCard(type: .maxSpeed, value: 0)
+                    RideStatCard(type: .distance, value: 0.0)
+                    RideStatCard(type: .speed, value: 0)
+                    RideStatCard(type: .maxSpeed, value: 0)
                 }
                 
                 switch vm.state {

@@ -1,5 +1,5 @@
 //
-//  StatsCard.swift
+//  RideStatCard.swift
 //  Traxo
 //
 //  Created by Fabio Czudaj on 22/03/2026.
@@ -20,7 +20,7 @@ enum StatType {
     }
 }
 
-struct StatsCard: View {
+struct RideStatCard: View {
     let type: StatType
     let value: Double
     

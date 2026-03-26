@@ -1,5 +1,5 @@
 //
-//  HomeRidesCard.swift
+//  MiniRideCard.swift
 //  Traxo
 //
 //  Created by Fabio Czudaj on 19/03/2026.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct HomeRidesCard: View {
+struct MiniRideCard: View {
     let name: String
     let desc: String
     
@@ -35,5 +35,5 @@ struct HomeRidesCard: View {
 }
 
 #Preview {
-    HomeRidesCard(name: "87 km", desc: "Mar 14 - 1h 32m")
+    MiniRideCard(name: "87 km", desc: "Mar 14 - 1h 32m")
 }
