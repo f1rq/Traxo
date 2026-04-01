@@ -11,28 +11,25 @@ struct RideCard: View {
     let ride: Ride
     
     var body: some View {
-        NavigationLink(destination: RideView(name: ride.title)) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack {
-                    Text(ride.title)
-                        .font(.title)
-                    Spacer()
-                    Text(ride.formattedDistance)
-                        .font(.title2)
-                        .bold()
-                }
-                HStack {
-                    Text(ride.formattedDate)
-                        .font(.subheadline)
-                    Spacer()
-                    Text(ride.formattedDuration)
-                        .font(.title3)
-                }
+        VStack(alignment: .leading, spacing: 4) {
+            HStack {
+                Text(ride.title)
+                    .font(.title)
+                Spacer()
+                Text(ride.formattedDistance)
+                    .font(.title2)
+                    .bold()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
+            HStack {
+                Text(ride.formattedDate)
+                    .font(.subheadline)
+                Spacer()
+                Text(ride.formattedDuration)
+                    .font(.title3)
+            }
         }
-        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
         .background(Color(.secondarySystemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 20))
         .overlay(
