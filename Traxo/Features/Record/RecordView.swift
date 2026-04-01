@@ -13,13 +13,18 @@ struct RecordView: View {
     let vm: RideViewModel
     @Environment(\.modelContext) private var context
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
+    @State private var showMap: Bool = true
     
     var body: some View {
         ZStack {
             VStack(spacing: 28) {
-                Map(position: $position)
-                    .frame(height: 300)
-                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                if showMap {
+                    Map(position: $position)
+                        .frame(height: 300)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .disabled(true)
+                        .transition(.opacity.combined(with: .scale))
+                }
                 
                 VStack{
                     Text(vm.formattedTime)
@@ -64,8 +69,8 @@ struct RecordView: View {
                                 .clipShape(Circle())
                         }
                         
-                        Button(action: {}) {
-                            Image(systemName: "mappin")
+                        Button(action: { withAnimation { showMap.toggle() } }) {
+                            Image(systemName: showMap ? "map.fill" : "map")
                                 .foregroundStyle(.primary)
                                 .frame(width: 64, height: 64)
                                 .background(Color(.secondarySystemBackground))
@@ -95,8 +100,8 @@ struct RecordView: View {
                                 .clipShape(Circle())
                         }
                         
-                        Button(action: {}) {
-                            Image(systemName: "mappin")
+                        Button(action: { withAnimation { showMap.toggle() } }) {
+                            Image(systemName: showMap ? "map.fill" : "map")
                                 .foregroundStyle(.primary)
                                 .frame(width: 64, height: 64)
                                 .background(Color(.secondarySystemBackground))
