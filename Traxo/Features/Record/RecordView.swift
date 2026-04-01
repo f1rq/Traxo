@@ -7,22 +7,28 @@
 
 import SwiftUI
 import SwiftData
+import MapKit
 
 struct RecordView: View {
     let vm: RideViewModel
     @Environment(\.modelContext) private var context
+    @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     
     var body: some View {
         ZStack {
             VStack(spacing: 28) {
+                Map(position: $position)
+                    .frame(height: 300)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                
                 VStack{
                     Text(vm.formattedTime)
                         .font(.system(size: 72))
                 }
                 HStack(spacing: 16) {
-                    RideStatCard(type: .distance, value: 0.0)
-                    RideStatCard(type: .speed, value: 0)
-                    RideStatCard(type: .maxSpeed, value: 0)
+                    RideStatCard(type: .distance, value: vm.locationManager.totalDistance / 1000)
+                    RideStatCard(type: .speed, value: vm.locationManager.currentSpeed * 3.6)
+                    RideStatCard(type: .maxSpeed, value: vm.locationManager.maxSpeed * 3.6)
                 }
                 
                 switch vm.state {
@@ -102,4 +108,8 @@ struct RecordView: View {
         }
         .padding(.horizontal)
     }
+}
+
+#Preview {
+    RecordView(vm: RideViewModel())
 }

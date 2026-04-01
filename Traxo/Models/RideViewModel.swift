@@ -20,11 +20,14 @@ class RideViewModel {
     var state: RideState = .idle
     
     private var timer: Timer?
+    private(set) var locationManager = LocationManager()
     
     func start() {
         guard state != .running else { return }
         
+        elapsedSeconds = 0
         state = .running
+        locationManager.startTracking()
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
             self.elapsedSeconds += 1
         }
@@ -43,13 +46,13 @@ class RideViewModel {
         var savedRide: Ride? = nil
         if elapsedSeconds > 0 {
             savedRide = Ride(
-                distance: Double.random(in: 1...20),
+                distance: locationManager.totalDistance / 1000, // meters to km
                 duration: elapsedSeconds,
                 date: Date()
             )
         }
         
-        elapsedSeconds = 0
+        _ = locationManager.stopTracking()
         state = .idle
         return savedRide
     }
