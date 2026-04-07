@@ -14,18 +14,22 @@ class Ride {
     var distance: Double
     var duration: Int
     var date: Date
+    var maxSpeed: Double
+    var avgSpeed: Double
     
-    init(distance: Double, duration: Int, date: Date) {
+    init(distance: Double, duration: Int, date: Date, maxSpeed: Double, avgSpeed: Double) {
         self.title = "Untitled ride"
         self.distance = distance
         self.duration = duration
         self.date = date
+        self.maxSpeed = maxSpeed
+        self.avgSpeed = avgSpeed
     }
 }
 
 extension Ride {
     var formattedDistance: String {
-        distance.formatted(.number.precision(.fractionLength(1))) + " km"
+        distance.formatted(.number.precision(.fractionLength(1)))
     }
     
     var formattedDuration: String {
@@ -55,5 +59,13 @@ extension Ride {
         formatter.dateFormat = (rideYear == currentYear) ? "dd MMM, HH:mm" : "dd MMM yyyy, HH:mm"
         
         return formatter.string(from: date)
+    }
+    
+    var formattedMaxSpeed: String {
+        String(format: "%.0f", maxSpeed)
+    }
+    
+    var formattedAvgSpeed: String {
+        String(format: "%.0f", avgSpeed)
     }
 }

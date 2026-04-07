@@ -48,7 +48,9 @@ class RideViewModel {
             savedRide = Ride(
                 distance: locationManager.totalDistance / 1000, // meters to km
                 duration: elapsedSeconds,
-                date: Date()
+                date: Date(),
+                maxSpeed: locationManager.maxSpeed * 3.6,
+                avgSpeed: avgSpeed
             )
         }
         
@@ -62,5 +64,24 @@ class RideViewModel {
         let m = (elapsedSeconds % 3600) / 60
         let s = elapsedSeconds % 60
         return String(format: "%02d:%02d:%02d", h, m, s)
+    }
+    
+    var formattedDistance: String {
+        String(format: "%.1f", locationManager.totalDistance / 1000)
+    }
+    
+    var formattedSpeed: String {
+        String(format: "%.0f", locationManager.currentSpeed * 3.6)
+    }
+    
+    var formattedMaxSpeed: String {
+        String(format: "%.0f", locationManager.maxSpeed * 3.6)
+    }
+    
+    var avgSpeed: Double {
+        guard elapsedSeconds > 0 else { return 0 }
+        let distance = locationManager.totalDistance / 1000
+        let duration = Double(elapsedSeconds) / 3600
+        return distance / duration
     }
 }

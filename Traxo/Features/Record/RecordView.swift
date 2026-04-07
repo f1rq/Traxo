@@ -12,8 +12,10 @@ import MapKit
 struct RecordView: View {
     let vm: RideViewModel
     @Environment(\.modelContext) private var context
+    @Environment(\.dismiss) private var dismiss
     @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     @State private var showMap: Bool = true
+    @State private var completedRide: Ride? = nil
     
     var body: some View {
         ZStack {
@@ -31,9 +33,9 @@ struct RecordView: View {
                         .font(.system(size: 72))
                 }
                 HStack(spacing: 16) {
-                    RideStatCard(type: .distance, value: vm.locationManager.totalDistance / 1000)
-                    RideStatCard(type: .speed, value: vm.locationManager.currentSpeed * 3.6)
-                    RideStatCard(type: .maxSpeed, value: vm.locationManager.maxSpeed * 3.6)
+                    RideStatCard(label: "km", value: vm.formattedDistance)
+                    RideStatCard(label: "km/h", value: vm.formattedSpeed)
+                    RideStatCard(label: "max km/h", value: vm.formattedMaxSpeed)
                 }
                 
                 switch vm.state {
@@ -50,7 +52,7 @@ struct RecordView: View {
                     HStack(spacing: 16) {
                         Button(action: {
                             if let ride = vm.stop() {
-                                context.insert(ride)
+                                completedRide = vm.stop()
                             }
                         }) {
                             Image(systemName: "stop.fill")
@@ -81,7 +83,7 @@ struct RecordView: View {
                     HStack(spacing: 16) {
                         Button(action: {
                             if let ride = vm.stop() {
-                                context.insert(ride)
+                                completedRide = vm.stop()
                             }
                         }) {
                             Image(systemName: "stop.fill")
@@ -112,6 +114,11 @@ struct RecordView: View {
             }
         }
         .padding(.horizontal)
+        .sheet(item: $completedRide) { ride in
+            RideSummaryView(vm: vm, ride: ride) {
+                dismiss()
+            }
+        }
     }
 }
 
