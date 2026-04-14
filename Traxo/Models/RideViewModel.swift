@@ -25,18 +25,25 @@ class RideViewModel {
     func start() {
         guard state != .running else { return }
         
-        elapsedSeconds = 0
+        if state == .idle {
+            elapsedSeconds = 0
+            locationManager.startNewRide()
+        } else {
+            locationManager.resumeTracking()
+        }
+        
         state = .running
-        locationManager.startTracking()
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
-            self.elapsedSeconds += 1
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.elapsedSeconds += 1
         }
     }
     
     func pause() {
+        guard state == .running else { return }
         state = .paused
         timer?.invalidate()
         timer = nil
+        locationManager.pauseTracking()
     }
     
     func stop() -> Ride? {
@@ -56,6 +63,7 @@ class RideViewModel {
         
         _ = locationManager.stopTracking()
         state = .idle
+        elapsedSeconds = 0
         return savedRide
     }
     

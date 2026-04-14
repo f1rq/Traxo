@@ -25,23 +25,29 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.distanceFilter = 5
     }
     
-    func startTracking() {
-        manager.requestWhenInUseAuthorization()
-        manager.startUpdatingLocation()
-        
+    func startNewRide() {
         routeCoordinates = []
         totalDistance = 0
         currentSpeed = 0
         maxSpeed = 0
+        currentLocation = nil
+        manager.requestWhenInUseAuthorization()
+        manager.startUpdatingLocation()
+    }
+    
+    func resumeTracking() {
+        manager.startUpdatingLocation()
+    }
+    
+    func pauseTracking() {
+        manager.stopUpdatingLocation()
+        currentSpeed = 0
     }
     
     func stopTracking() -> [CLLocationCoordinate2D] {
         manager.stopUpdatingLocation()
-        let route = routeCoordinates
-        routeCoordinates = []
-        totalDistance = 0
         currentSpeed = 0
-        return route
+        return routeCoordinates
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {

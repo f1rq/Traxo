@@ -10,6 +10,12 @@ import SwiftData
 
 @main
 struct TraxoApp: App {
+    init() {
+        DispatchQueue.main.async {
+            SharedMapHost.shared.warmUp()
+        }
+    }
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

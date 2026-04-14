@@ -13,20 +13,20 @@ struct RecordView: View {
     let vm: RideViewModel
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
     @State private var showMap: Bool = true
     @State private var completedRide: Ride? = nil
     
     var body: some View {
         ZStack {
             VStack(spacing: 28) {
-                if showMap {
-                    Map(position: $position)
-                        .frame(height: 300)
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                        .disabled(true)
-                        .transition(.opacity.combined(with: .scale))
-                }
+                SharedMapView(isInteractive: true)
+                    .frame(height: 300)
+                    .frame(height: showMap ? 300 : 0)
+                    .opacity(showMap ? 1 : 0)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .animation(.easeInOut, value: showMap)
+            
                 
                 VStack{
                     Text(vm.formattedTime)
@@ -52,7 +52,8 @@ struct RecordView: View {
                     HStack(spacing: 16) {
                         Button(action: {
                             if let ride = vm.stop() {
-                                completedRide = vm.stop()
+                                completedRide = ride
+                                showMap = false
                             }
                         }) {
                             Image(systemName: "stop.fill")
@@ -83,7 +84,8 @@ struct RecordView: View {
                     HStack(spacing: 16) {
                         Button(action: {
                             if let ride = vm.stop() {
-                                completedRide = vm.stop()
+                                completedRide = ride
+                                showMap = false
                             }
                         }) {
                             Image(systemName: "stop.fill")
@@ -115,10 +117,11 @@ struct RecordView: View {
         }
         .padding(.horizontal)
         .sheet(item: $completedRide) { ride in
-            RideSummaryView(vm: vm, ride: ride) {
+            RideSummaryView(ride: ride) {
                 dismiss()
             }
         }
+        .ignoresSafeArea(.keyboard)
     }
 }
 

@@ -10,78 +10,120 @@ import SwiftData
 import MapKit
 
 struct RideSummaryView: View {
-    let vm: RideViewModel
     let ride: Ride
     var onCompletion: () -> Void
-    
+
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
+
     @State private var rideName: String = ""
-    @State private var position: MapCameraPosition = .userLocation(fallback: .automatic)
-    
+    @FocusState private var titleFocused: Bool
+
     var body: some View {
-        VStack(spacing: 20) {
-            VStack(spacing: 8) {
-                Image(systemName: "checkmark.circle.fill")
-                    .font(.system(size: 56))
-                    .foregroundStyle(Color.accentColor)
-                
-                Text(ride.date, format: .dateTime.weekday(.wide).day().month().hour().minute())
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                
-                TextField("Untitled ride", text: $rideName)
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .multilineTextAlignment(.center)
-                    .textFieldStyle(.plain)
-            }
-            
-            Map(position: $position)
-                .frame(height: 300)
-                .clipShape(RoundedRectangle(cornerRadius: 20))
-                .disabled(true)
-                .transition(.opacity.combined(with: .scale))
-            
-            HStack(spacing: 16) {
-                RideStatCard(label: "km", value: ride.formattedDistance)
-                RideStatCard(label: "avg km/h", value: ride.formattedAvgSpeed)
-                RideStatCard(label: "max km/h", value: ride.formattedMaxSpeed)
-            }
-            RideStatCard(label: "duration", value: ride.formattedDuration, width: 165)
-            
-            HStack(spacing: 12) {
-                Button("Discard") {
-                    context.delete(ride)
-                    dismiss()
-                    onCompletion()
+        ScrollView {
+            VStack(spacing: 20) {
+                VStack(spacing: 8) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 56))
+                        .foregroundStyle(Color.accentColor)
+
+                    Text(ride.date, format: .dateTime.weekday(.wide).day().month().hour().minute())
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+
+                    TextField("Untitled ride", text: $rideName)
+                        .font(.largeTitle.bold())
+                        .multilineTextAlignment(.center)
+                        .textFieldStyle(.plain)
+                        .focused($titleFocused)
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+                .padding(.top)
                 
-                Button("Save") {
-                    ride.title = rideName.isEmpty ? "Untitled ride" : rideName
-                    context.insert(ride)
-                    dismiss()
-                    onCompletion()
+                if titleFocused {
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(.thinMaterial)
+                        .frame(height: 300)
+                        .overlay {
+                            Image(systemName: "map")
+                                .font(.title2)
+                                .foregroundStyle(.secondary)
+                        }
+                } else {
+                    SharedMapView(isInteractive: false)
+                        .frame(height: 300)
+                        .clipped()
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .foregroundStyle(.primary)
-                .glassEffect(.regular.interactive().tint(.accentColor), in: RoundedRectangle(cornerRadius: 20))
+
+                HStack(spacing: 16) {
+                    RideStatCard(label: "km", value: ride.formattedDistance)
+                    RideStatCard(label: "avg km/h", value: ride.formattedAvgSpeed)
+                    RideStatCard(label: "max km/h", value: ride.formattedMaxSpeed)
+                }
+
+                RideStatCard(label: "duration", value: ride.formattedDuration, width: 165)
+
+                HStack(spacing: 12) {
+                    Button("Discard") {
+                        context.delete(ride)
+                        dismiss()
+                        onCompletion()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .glassEffect(.regular.interactive(), in: RoundedRectangle(cornerRadius: 20))
+
+                    Button("Save") {
+                        ride.title = rideName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+                            ? "Untitled ride"
+                            : rideName
+                        context.insert(ride)
+                        dismiss()
+                        onCompletion()
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding()
+                    .foregroundStyle(.primary)
+                    .glassEffect(.regular.interactive().tint(.accentColor), in: RoundedRectangle(cornerRadius: 20))
+                }
             }
+            .padding()
         }
-        
-        .padding()
+        .scrollDismissesKeyboard(.interactively)
         .presentationDetents([.large])
         .interactiveDismissDisabled()
+        .onAppear {
+            rideName = ride.title
+        }
+    }
+}
+
+struct TitleTextField: View {
+    @Binding var finalName: String
+    @State private var draftName: String = ""
+    @FocusState private var isFocused: Bool
+    
+    var body: some View {
+        TextField("Untitled ride", text: $draftName)
+            .font(.largeTitle)
+            .fontWeight(.bold)
+            .multilineTextAlignment(.center)
+            .textFieldStyle(.plain)
+            .focused($isFocused)
+            .onAppear {
+                draftName = finalName
+            }
+            .onChange(of: isFocused) { _, focused in
+                if !focused {
+                    finalName = draftName
+                }
+            }
     }
 }
 
 #Preview {
     RideSummaryView(
-        vm: RideViewModel(), ride: Ride(distance: 42.5, duration: 3123, date: Date(), maxSpeed: 120, avgSpeed: 80),
+        ride: Ride(distance: 42.5, duration: 3123, date: Date(), maxSpeed: 120, avgSpeed: 80),
         onCompletion: {}
     )
 }
