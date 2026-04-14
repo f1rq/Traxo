@@ -7,11 +7,42 @@
 
 import SwiftUI
 
+import SwiftUI
+import MapKit
+
 struct RideView: View {
-    let name: String
-    
+    let ride: Ride
+
     var body: some View {
-        Text(name)
-            .navigationTitle(name)
+        ScrollView {
+            VStack(spacing: 20) {
+                SharedMapView(isInteractive: false)
+                    .frame(height: 260)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+
+                VStack(spacing: 8) {
+                    Text(ride.title.isEmpty ? "Untitled ride" : ride.title)
+                        .font(.title.bold())
+                        .multilineTextAlignment(.center)
+
+                    Text(ride.date, format: .dateTime.weekday(.wide).day().month().year().hour().minute())
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                
+                HStack(spacing: 16) {
+                    RideStatCard(label: "distance", value: ride.formattedDistance)
+                    RideStatCard(label: "duration", value: ride.formattedDuration)
+                }
+
+                HStack(spacing: 16) {
+                    RideStatCard(label: "max speed", value: ride.formattedMaxSpeed)
+                    RideStatCard(label: "avg speed", value: ride.formattedAvgSpeed)
+                }
+            }
+            .padding()
+        }
+        .navigationTitle("Ride")
+        .navigationBarTitleDisplayMode(.inline)
     }
 }

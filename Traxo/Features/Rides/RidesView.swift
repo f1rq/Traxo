@@ -18,7 +18,7 @@ struct RidesView: View {
         List {
             ForEach(rides) { ride in
                 ZStack {
-                    NavigationLink(destination: RideView(name: ride.title)) {
+                    NavigationLink(destination: RideView(ride: ride)) {
                         EmptyView()
                     }
                     .opacity(0)

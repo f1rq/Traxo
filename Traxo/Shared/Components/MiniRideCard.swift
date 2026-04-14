@@ -11,7 +11,7 @@ struct MiniRideCard: View {
     let ride: Ride
     
     var body: some View {
-        NavigationLink(destination: RideView(name: ride.title)) {
+        NavigationLink(destination: RideView(ride: ride)) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(ride.title)
                     .font(.title3)
