@@ -29,7 +29,7 @@ class Ride {
 
 extension Ride {
     var formattedDistance: String {
-        distance.formatted(.number.precision(.fractionLength(1)))
+        distance.formatted(.number.precision(.fractionLength(1))) + " km"
     }
     
     var formattedDuration: String {
@@ -62,10 +62,10 @@ extension Ride {
     }
     
     var formattedMaxSpeed: String {
-        String(format: "%.0f", maxSpeed)
+        String(format: "%.0f", maxSpeed) + " km/h"
     }
     
     var formattedAvgSpeed: String {
-        String(format: "%.0f", avgSpeed)
+        String(format: "%.0f", avgSpeed) + " km/h"
     }
 }

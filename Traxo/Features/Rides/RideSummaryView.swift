@@ -54,14 +54,16 @@ struct RideSummaryView: View {
                         .clipped()
                         .clipShape(RoundedRectangle(cornerRadius: 20))
                 }
-
+                
                 HStack(spacing: 16) {
-                    RideStatCard(label: "km", value: ride.formattedDistance)
-                    RideStatCard(label: "avg km/h", value: ride.formattedAvgSpeed)
-                    RideStatCard(label: "max km/h", value: ride.formattedMaxSpeed)
+                    RideStatCard(label: "distance", value: ride.formattedDistance)
+                    RideStatCard(label: "duration", value: ride.formattedDuration)
                 }
 
-                RideStatCard(label: "duration", value: ride.formattedDuration, width: 165)
+                HStack(spacing: 16) {
+                    RideStatCard(label: "max speed", value: ride.formattedMaxSpeed)
+                    RideStatCard(label: "avg speed", value: ride.formattedAvgSpeed)
+                }
 
                 HStack(spacing: 12) {
                     Button("Discard") {
