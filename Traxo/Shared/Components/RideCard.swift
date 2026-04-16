@@ -16,7 +16,7 @@ struct RideCard: View {
                 Text(ride.title)
                     .font(.title)
                 Spacer()
-                Text(ride.formattedDistance + " km")
+                Text(ride.formattedDistance)
                     .font(.title2)
                     .bold()
             }
