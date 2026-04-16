@@ -49,9 +49,6 @@ struct ContentView: View {
         .sheet(isPresented: $showRecordSheet) {
             RecordView(vm: vm)
         }
-        .task {
-            SharedMapHost.shared.warmUp()
-        }
     }
 }
 

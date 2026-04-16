@@ -7,6 +7,7 @@
 
 import Foundation
 import Observation
+import CoreLocation
 
 enum RideState {
     case idle
@@ -52,16 +53,20 @@ class RideViewModel {
         
         var savedRide: Ride? = nil
         if elapsedSeconds > 0 {
+            let coords = locationManager.stopTracking()
             savedRide = Ride(
                 distance: locationManager.totalDistance / 1000, // meters to km
                 duration: elapsedSeconds,
                 date: Date(),
                 maxSpeed: locationManager.maxSpeed * 3.6,
-                avgSpeed: avgSpeed
+                avgSpeed: avgSpeed,
+                rideLatitudes: coords.map { $0.latitude },
+                rideLongitudes: coords.map { $0.longitude }
             )
+        } else {
+            _ = locationManager.stopTracking()
         }
         
-        _ = locationManager.stopTracking()
         state = .idle
         elapsedSeconds = 0
         return savedRide

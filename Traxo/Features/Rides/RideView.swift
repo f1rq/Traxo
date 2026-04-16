@@ -16,7 +16,7 @@ struct RideView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
-                SharedMapView(isInteractive: false)
+                SharedMapView(isInteractive: false, routeCoordinates: ride.routeCoordinates)
                     .frame(height: 260)
                     .clipShape(RoundedRectangle(cornerRadius: 20))
 

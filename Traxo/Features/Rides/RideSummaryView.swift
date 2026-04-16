@@ -39,21 +39,10 @@ struct RideSummaryView: View {
                 }
                 .padding(.top)
                 
-                if titleFocused {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(.thinMaterial)
-                        .frame(height: 300)
-                        .overlay {
-                            Image(systemName: "map")
-                                .font(.title2)
-                                .foregroundStyle(.secondary)
-                        }
-                } else {
-                    SharedMapView(isInteractive: false)
-                        .frame(height: 300)
-                        .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 20))
-                }
+                SharedMapView(isInteractive: false, routeCoordinates: ride.routeCoordinates)
+                    .frame(height: 300)
+                    .clipped()
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
                 
                 HStack(spacing: 16) {
                     RideStatCard(label: "distance", value: ride.formattedDistance)

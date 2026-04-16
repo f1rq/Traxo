@@ -7,6 +7,7 @@
 
 import SwiftData
 import Foundation
+import CoreLocation
 
 @Model
 class Ride {
@@ -16,14 +17,18 @@ class Ride {
     var date: Date
     var maxSpeed: Double
     var avgSpeed: Double
+    var rideLatitudes: [Double]
+    var rideLongitudes: [Double]
     
-    init(distance: Double, duration: Int, date: Date, maxSpeed: Double, avgSpeed: Double) {
+    init(distance: Double, duration: Int, date: Date, maxSpeed: Double, avgSpeed: Double, rideLatitudes: [Double] = [], rideLongitudes: [Double] = []) {
         self.title = "Untitled ride"
         self.distance = distance
         self.duration = duration
         self.date = date
         self.maxSpeed = maxSpeed
         self.avgSpeed = avgSpeed
+        self.rideLatitudes = rideLatitudes
+        self.rideLongitudes = rideLongitudes
     }
 }
 
@@ -67,5 +72,11 @@ extension Ride {
     
     var formattedAvgSpeed: String {
         String(format: "%.0f", avgSpeed) + " km/h"
+    }
+    
+    var routeCoordinates: [CLLocationCoordinate2D] {
+        zip(rideLatitudes, rideLongitudes).map {
+            CLLocationCoordinate2D(latitude: $0.0, longitude: $0.1)
+        }
     }
 }

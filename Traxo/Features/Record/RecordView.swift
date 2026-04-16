@@ -19,7 +19,10 @@ struct RecordView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 28) {
-                SharedMapView(isInteractive: true)
+                SharedMapView(
+                    isInteractive: true,
+                    routeCoordinates: vm.locationManager.routeCoordinates
+                )
                     .frame(height: 300)
                     .frame(height: showMap ? 300 : 0)
                     .opacity(showMap ? 1 : 0)
