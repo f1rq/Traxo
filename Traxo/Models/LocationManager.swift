@@ -27,6 +27,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         manager.activityType = .automotiveNavigation
         manager.allowsBackgroundLocationUpdates = true
         manager.pausesLocationUpdatesAutomatically = false
+        manager.requestAlwaysAuthorization()
     }
     
     func startNewRide() {
@@ -36,7 +37,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         maxSpeed = 0
         currentLocation = nil
         isRecording = true
-        manager.requestAlwaysAuthorization()
         manager.startUpdatingLocation()
     }
     
