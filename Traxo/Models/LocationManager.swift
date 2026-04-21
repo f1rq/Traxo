@@ -36,7 +36,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         maxSpeed = 0
         currentLocation = nil
         isRecording = true
-        manager.requestWhenInUseAuthorization()
+        manager.requestAlwaysAuthorization()
         manager.startUpdatingLocation()
     }
     
