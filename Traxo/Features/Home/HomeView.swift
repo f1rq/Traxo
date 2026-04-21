@@ -38,7 +38,7 @@ struct HomeView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 12) {
-                        SectionHeader(title: "Recent rides", action: .navigate(AnyView(RidesView())))
+                        SectionHeader(title: "Your rides", action: .navigate(AnyView(RidesView())))
                         
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
