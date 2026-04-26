@@ -19,9 +19,35 @@ enum RideState {
 class RideViewModel {
     var elapsedSeconds: Int = 0
     var state: RideState = .idle
+    var isAutoPaused = false
     
     private var timer: Timer?
     private(set) var locationManager = LocationManager()
+    
+    init() {
+        setupCallbacks()
+    }
+    
+    private func setupCallbacks() {
+        locationManager.onAutoPause = { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                self.isAutoPaused = true
+                self.timer?.invalidate()
+                self.timer = nil
+            }
+        }
+        
+        locationManager.onAutoResume = { [weak self] in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                self.isAutoPaused = false
+                self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                    self?.elapsedSeconds += 1
+                }
+            }
+        }
+    }
     
     func start() {
         guard state != .running else { return }

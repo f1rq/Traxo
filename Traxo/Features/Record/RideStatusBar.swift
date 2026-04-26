@@ -18,7 +18,7 @@ struct RideStatusBar: View {
             ZStack {
                 HStack(spacing: 16) {
                     HStack {
-                        Text(vm.state == .running ? "Recording" : "Paused")
+                        Text(vm.isAutoPaused ? "Auto-paused" : vm.state == .running ? "Recording" : "Paused")
                             .foregroundStyle(.primary)
                         Spacer(minLength: 0)
                     }
