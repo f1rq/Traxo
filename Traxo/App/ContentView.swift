@@ -21,9 +21,9 @@ struct ContentView: View {
                     }
                     .tag(0)
                 
-                RoutesView()
+                RidesView()
                     .tabItem {
-                        Label("Routes", systemImage: "point.topleft.filled.down.to.point.bottomright.curvepath")
+                        Label("Rides", systemImage: "point.topleft.filled.down.to.point.bottomright.curvepath")
                     }
                     .tag(1)
                 

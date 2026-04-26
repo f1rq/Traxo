@@ -31,14 +31,14 @@ struct HomeView: View {
                     StartRideCard(vm: vm, showSheet: $showRecordSheet)
                     
                     VStack(alignment: .leading, spacing: 12) {
-                        SectionHeader(title: "Your garage", action: .switchTab($selectedTab, to: 2))
+                        SectionHeader(title: "Recent bikes", action: .textOnly)
                         
                         HomeBikeCard(name: "Honda Rebel 125", desc: "Last ride: 3 days ago", descType: "normal")
                         HomeBikeCard(name: "BMW S1000RR", desc: "Oil change due", descType: "warning")
                     }
                     
                     VStack(alignment: .leading, spacing: 12) {
-                        SectionHeader(title: "Your rides", action: .navigate(AnyView(RidesView())))
+                        SectionHeader(title: "Recent rides", action: .textOnly)
                         
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
@@ -49,10 +49,10 @@ struct HomeView: View {
                         }
                     }
                     
-                    NavigationLink(destination: DebugRidesView()) {
-                        Text("Debug Rides")
-                    }
-                    .background(Color.red.opacity(0.1))
+//                    NavigationLink(destination: DebugRidesView()) {
+//                        Text("Debug Rides")
+//                    }
+//                    .background(Color.red.opacity(0.1))
                 }
                 .padding(.horizontal)
             }

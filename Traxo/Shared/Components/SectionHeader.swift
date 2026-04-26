@@ -7,8 +7,16 @@
 import SwiftUI
 
 enum SectionHeaderAction {
+    case textOnly
     case switchTab(Binding<Int>, to: Int)
     case navigate(AnyView)
+    
+    var isTextOnly: Bool {
+        if case .textOnly = self {
+            return true
+        }
+        return false
+    }
 }
 
 struct SectionHeader: View {
@@ -28,6 +36,9 @@ struct SectionHeader: View {
                 headerContent
             }
             .buttonStyle(.plain)
+            
+        case .textOnly:
+            headerContent
         }
     }
     
@@ -38,11 +49,14 @@ struct SectionHeader: View {
                 .fontWeight(.semibold)
                 .foregroundStyle(.secondary)
                 .textCase(.uppercase)
-            Image(systemName: "chevron.right")
-                .font(.subheadline)
-                .fontWeight(.semibold)
-                .foregroundStyle(.secondary)
-                .textCase(.uppercase)
+            
+            if !action.isTextOnly {
+                Image(systemName: "chevron.right")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+                    .textCase(.uppercase)
+            }
         }
     }
 }

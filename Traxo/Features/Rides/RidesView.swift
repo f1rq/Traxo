@@ -15,33 +15,36 @@ struct RidesView: View {
     private var rides: [Ride]
 
     var body: some View {
-        List {
-            ForEach(rides) { ride in
-                ZStack {
-                    NavigationLink(destination: RideView(ride: ride)) {
-                        EmptyView()
+        NavigationStack {
+            List {
+                ForEach(rides) { ride in
+                    ZStack {
+                        NavigationLink(destination: RideView(ride: ride)) {
+                            EmptyView()
+                        }
+                        .opacity(0)
+                        
+                        RideCard(ride: ride)
+                            .padding(.horizontal)
+                            .padding(.vertical, 6)
                     }
-                    .opacity(0)
-                    
-                    RideCard(ride: ride)
-                        .padding(.horizontal)
-                        .padding(.vertical, 6)
-                }
-                .listRowInsets(EdgeInsets())
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-                .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                    Button(role: .destructive) {
-                        modelContext.delete(ride)
-                    } label: {
-                        Label("Delete", systemImage: "trash")
+                    .listRowInsets(EdgeInsets())
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        Button(role: .destructive) {
+                            modelContext.delete(ride)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
                     }
                 }
             }
+            .listStyle(.plain)
+            .scrollContentBackground(.hidden)
+            .background(Color.clear)
+            .navigationTitle("Your rides")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .listStyle(.plain)
-        .scrollContentBackground(.hidden)
-        .background(Color.clear)
-        .navigationTitle("Your rides")
     }
 }
