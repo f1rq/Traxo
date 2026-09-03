@@ -17,6 +17,7 @@ struct RideSummaryView: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var rideName: String = ""
+    @State private var editingTitle = false
     @FocusState private var titleFocused: Bool
 
     var body: some View {
@@ -31,13 +32,35 @@ struct RideSummaryView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
-                    TextField("Untitled ride", text: $rideName)
-                        .font(.largeTitle.bold())
-                        .multilineTextAlignment(.center)
-                        .textFieldStyle(.plain)
-                        .focused($titleFocused)
+                    if editingTitle {
+                        TextField("Untitled ride", text: $rideName)
+                            .font(.largeTitle.bold())
+                            .multilineTextAlignment(.center)
+                            .textFieldStyle(.plain)
+                            .focused($titleFocused)
+                            .onAppear {
+                                DispatchQueue.main.async {
+                                    titleFocused = true
+                                }
+                            }
+                            .onSubmit {
+                                editingTitle = false
+                            }
+                    } else {
+                        Text(rideName.isEmpty ? "Untitled ride" : rideName)
+                            .font(.largeTitle.bold())
+                            .multilineTextAlignment(.center)
+                            .onTapGesture {
+                                editingTitle = true
+                            }
+                    }
                 }
                 .padding(.top)
+                .onChange(of: titleFocused) {
+                    if !titleFocused {
+                        editingTitle =  false
+                    }
+                }
                 
                 SharedMapView(isInteractive: false, routeCoordinates: ride.routeCoordinates)
                     .frame(height: 300)
@@ -117,4 +140,5 @@ struct TitleTextField: View {
         ride: Ride(distance: 42.5, duration: 3123, date: Date(), maxSpeed: 120, avgSpeed: 80),
         onCompletion: {}
     )
+    .modelContainer(for: Ride.self, inMemory: true)
 }

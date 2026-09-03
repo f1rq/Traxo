@@ -13,6 +13,16 @@ import MapKit
 struct RideView: View {
     let ride: Ride
 
+    @State private var editingTitle = false
+    @State private var rideName: String
+    
+    @FocusState private var titleFocused: Bool
+    
+    init(ride: Ride) {
+        self.ride = ride
+        _rideName = State(initialValue: ride.title)
+    }
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -21,13 +31,39 @@ struct RideView: View {
                     .clipShape(RoundedRectangle(cornerRadius: 20))
 
                 VStack(spacing: 8) {
-                    Text(ride.title.isEmpty ? "Untitled ride" : ride.title)
-                        .font(.title.bold())
-                        .multilineTextAlignment(.center)
-
+                    if editingTitle {
+                        TextField("Ride Title", text: $rideName)
+                            .font(.title.bold())
+                            .multilineTextAlignment(.center)
+                            .textFieldStyle(.plain)
+                            .focused($titleFocused)
+                            .onAppear {
+                                DispatchQueue.main.async {
+                                    titleFocused = true
+                                }
+                            }
+                            .onSubmit {
+                                editingTitle = false
+                            }
+                    } else {
+                        Text(rideName.isEmpty ? "Untitled ride" : rideName)
+                            .font(.title.bold())
+                            .multilineTextAlignment(.center)
+                            .onTapGesture {
+                                editingTitle = true
+                            }
+                    }
+                  
                     Text(ride.date, format: .dateTime.weekday(.wide).day().month().year().hour().minute())
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+                }
+                
+                .onChange(of: titleFocused) {
+                    if !titleFocused {
+                        editingTitle = false
+                        ride.title = rideName
+                    }
                 }
                 
                 HStack(spacing: 16) {
