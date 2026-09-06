@@ -11,6 +11,7 @@ import MapKit
 struct SharedMapView: UIViewRepresentable {
     let isInteractive: Bool
     var routeCoordinates: [CLLocationCoordinate2D] = []
+    var showMarkers: Bool = false
 
     func makeUIView(context: Context) -> MKMapView {
         let map = MKMapView()
@@ -27,11 +28,9 @@ struct SharedMapView: UIViewRepresentable {
         map.isScrollEnabled = isInteractive
         map.isZoomEnabled = isInteractive
         map.isUserInteractionEnabled = isInteractive
-
-        let currentCount = (map.overlays.first as? MKPolyline)?.pointCount ?? 0
-        guard routeCoordinates.count != currentCount else { return }
         
         map.removeOverlays(map.overlays)
+        map.removeAnnotations(map.annotations)
         
         guard routeCoordinates.count > 1 else {
             if let first = routeCoordinates.first {
@@ -48,6 +47,18 @@ struct SharedMapView: UIViewRepresentable {
         var coords = routeCoordinates
         let polyline = MKPolyline(coordinates: &coords, count: coords.count)
         map.addOverlay(polyline, level: .aboveRoads)
+        
+        if showMarkers, let first = routeCoordinates.first, let last = routeCoordinates.last {
+            let startAnn = MKPointAnnotation()
+            startAnn.coordinate = first
+            startAnn.title = "Start"
+            
+            let finishAnn = MKPointAnnotation()
+            finishAnn.coordinate = last
+            finishAnn.title = "Finish"
+            
+            map.addAnnotations([startAnn, finishAnn])
+        }
         
         if isInteractive {
             let lastCoord = routeCoordinates[routeCoordinates.count - 1]
@@ -81,6 +92,28 @@ struct SharedMapView: UIViewRepresentable {
                 return renderer
             }
             return MKOverlayRenderer(overlay: overlay)
+        }
+        
+        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+            guard !(annotation is MKUserLocation) else { return nil }
+            
+            let identifier = "RideMarker"
+            var view = mapView.dequeueReusableAnnotationView(withIdentifier: identifier) as? MKMarkerAnnotationView
+            if view == nil {
+                view = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: identifier)
+            } else {
+                view?.annotation = annotation
+            }
+            
+            if annotation.title == "Start" {
+                view?.markerTintColor = UIColor.systemGreen
+                view?.glyphImage = UIImage(systemName: "play.fill")
+            } else if annotation.title == "Finish" {
+                view?.markerTintColor = UIColor.systemRed
+                view?.glyphImage = UIImage(systemName: "flag.fill")
+            }
+            
+            return view
         }
     }
 }

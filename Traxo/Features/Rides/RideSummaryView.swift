@@ -62,7 +62,7 @@ struct RideSummaryView: View {
                     }
                 }
                 
-                SharedMapView(isInteractive: false, routeCoordinates: ride.routeCoordinates)
+                SharedMapView(isInteractive: false, routeCoordinates: ride.routeCoordinates, showMarkers: true)
                     .frame(height: 300)
                     .clipped()
                     .clipShape(RoundedRectangle(cornerRadius: 20))
