@@ -12,6 +12,7 @@ import CoreLocation
 @Model
 class Ride {
     var title: String
+    var desc: String
     var distance: Double
     var duration: Int
     var date: Date
@@ -20,8 +21,9 @@ class Ride {
     var rideLatitudes: [Double]
     var rideLongitudes: [Double]
     
-    init(distance: Double, duration: Int, date: Date, maxSpeed: Double, avgSpeed: Double, rideLatitudes: [Double] = [], rideLongitudes: [Double] = []) {
+    init(distance: Double, duration: Int, date: Date, maxSpeed: Double, avgSpeed: Double, desc: String = "", rideLatitudes: [Double] = [], rideLongitudes: [Double] = []) {
         self.title = "Untitled ride"
+        self.desc = desc
         self.distance = distance
         self.duration = duration
         self.date = date
