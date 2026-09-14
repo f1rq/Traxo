@@ -19,10 +19,14 @@ struct RideSummaryView: View {
     @State private var rideName: String = ""
     @State private var editingTitle = false
     @FocusState private var titleFocused: Bool
+    
+    @State private var rideDesc: String = ""
+    @State private var editingDesc = false
+    @FocusState private var descFocused: Bool
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
+            VStack(spacing: 16) {
                 VStack(spacing: 8) {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.system(size: 56))
@@ -32,33 +36,65 @@ struct RideSummaryView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
-                    if editingTitle {
-                        TextField("Untitled ride", text: $rideName)
-                            .font(.largeTitle.bold())
-                            .multilineTextAlignment(.center)
-                            .textFieldStyle(.plain)
-                            .focused($titleFocused)
-                            .onAppear {
-                                DispatchQueue.main.async {
-                                    titleFocused = true
+                    VStack(spacing: 4) { // Title and desc group
+                        if editingTitle {
+                            TextField("Untitled ride", text: $rideName)
+                                .font(.largeTitle.bold())
+                                .multilineTextAlignment(.center)
+                                .textFieldStyle(.plain)
+                                .focused($titleFocused)
+                                .onAppear {
+                                    DispatchQueue.main.async {
+                                        titleFocused = true
+                                    }
                                 }
-                            }
-                            .onSubmit {
-                                editingTitle = false
-                            }
-                    } else {
-                        Text(rideName.isEmpty ? "Untitled ride" : rideName)
-                            .font(.largeTitle.bold())
-                            .multilineTextAlignment(.center)
-                            .onTapGesture {
-                                editingTitle = true
-                            }
+                                .onSubmit {
+                                    editingTitle = false
+                                }
+                        } else {
+                            Text(rideName.isEmpty ? "Untitled ride" : rideName)
+                                .font(.largeTitle.bold())
+                                .multilineTextAlignment(.center)
+                                .onTapGesture {
+                                    editingTitle = true
+                                }
+                        }
+                        
+                        if editingDesc {
+                            TextField("Ride Description", text: $rideDesc)
+                                .font(.headline)
+                                .multilineTextAlignment(.center)
+                                .textFieldStyle(.plain)
+                                .focused($descFocused)
+                                .onAppear {
+                                    DispatchQueue.main.async {
+                                        descFocused = true
+                                    }
+                                }
+                                .onSubmit {
+                                    editingDesc = false
+                                }
+                        } else {
+                            Text(rideDesc.isEmpty ? "Add description..." : rideDesc)
+                                .font(.headline)
+                                .multilineTextAlignment(.center)
+                                .foregroundStyle(rideDesc.isEmpty ? .secondary : .primary)
+                                .onTapGesture {
+                                    editingDesc = true
+                                }
+                        }
                     }
+                    
                 }
                 .padding(.top)
                 .onChange(of: titleFocused) {
                     if !titleFocused {
                         editingTitle =  false
+                    }
+                }
+                .onChange(of: descFocused) {
+                    if !descFocused {
+                        editingDesc = false
                     }
                 }
                 
@@ -91,6 +127,7 @@ struct RideSummaryView: View {
                         ride.title = rideName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
                             ? "Untitled ride"
                             : rideName
+                        ride.desc = rideDesc
                         context.insert(ride)
                         dismiss()
                         onCompletion()
@@ -108,6 +145,7 @@ struct RideSummaryView: View {
         .interactiveDismissDisabled()
         .onAppear {
             rideName = ride.title
+            rideDesc = ride.desc
         }
     }
 }
@@ -137,7 +175,7 @@ struct TitleTextField: View {
 
 #Preview {
     RideSummaryView(
-        ride: Ride(distance: 42.5, duration: 3123, date: Date(), maxSpeed: 120, avgSpeed: 80),
+        ride: Ride(distance: 42.5, duration: 3123, date: Date(), maxSpeed: 120, avgSpeed: 80, desc: "test"),
         onCompletion: {}
     )
     .modelContainer(for: Ride.self, inMemory: true)
