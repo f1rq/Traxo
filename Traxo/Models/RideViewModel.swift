@@ -10,12 +10,13 @@ import Observation
 import CoreLocation
 import ActivityKit
 
-enum RideState {
+enum RideState: String, Codable {
     case idle
     case running
     case paused
 }
 
+@MainActor
 @Observable
 class RideViewModel {
     var elapsedSeconds: Int = 0
@@ -23,33 +24,62 @@ class RideViewModel {
     var isAutoPaused = false
     
     private var currentActivity: Activity<TraxoActivityAttributes>? = nil
-    
     private var timer: Timer?
     private(set) var locationManager = LocationManager()
     
+    private var accumulatedTime: TimeInterval {
+        get { UserDefaults.standard.double(forKey: "traxo_accumulatedTime") }
+        set { UserDefaults.standard.set(newValue, forKey: "traxo_accumulatedTime") }
+    }
+    
+    private var currentSegmentStartDate: Date? {
+        get { UserDefaults.standard.object(forKey: "traxo_segmentStart") as? Date }
+        set { UserDefaults.standard.set(newValue, forKey: "traxo_segmentStart") }
+    }
+    
     init() {
         setupCallbacks()
+        restoreActiveSession()
+    }
+    
+    private func restoreActiveSession() {
+        if let existingActivity = Activity<TraxoActivityAttributes>.activities.first {
+            self.currentActivity = existingActivity
+            
+            let savedStateRaw = UserDefaults.standard.string(forKey: "traxo_rideState") ?? "running"
+            self.state = RideState(rawValue: savedStateRaw) ?? .running
+            
+            recalculateElapsedSeconds()
+            
+            if self.state == .running {
+                startTimer()
+            }
+        } else {
+            clearPersistedState()
+        }
     }
     
     private func setupCallbacks() {
         locationManager.onAutoPause = { [weak self] in
             guard let self else { return }
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.isAutoPaused = true
-                self.timer?.invalidate()
-                self.timer = nil
+                self.stopTimer()
                 self.updateLiveActivity()
             }
         }
         
         locationManager.onAutoResume = { [weak self] in
             guard let self else { return }
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 self.isAutoPaused = false
-                self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-                    self?.elapsedSeconds += 1
-                    self?.updateLiveActivity()
+                if self.state == .running {
+                    if self.currentSegmentStartDate == nil {
+                        self.currentSegmentStartDate = Date()
+                    }
+                    self.startTimer()
                 }
+                self.updateLiveActivity()
             }
         }
     }
@@ -58,43 +88,55 @@ class RideViewModel {
         guard state != .running else { return }
         
         if state == .idle {
+            clearPersistedState()
+            accumulatedTime = 0
             elapsedSeconds = 0
+            currentSegmentStartDate = Date()
             locationManager.startNewRide()
             startLiveActivity()
         } else {
+            currentSegmentStartDate = Date()
             locationManager.resumeTracking()
         }
         
         state = .running
-        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
-            self?.elapsedSeconds += 1
-            
-            if (self?.elapsedSeconds ?? 0) % 2 == 0 {
-                self?.updateLiveActivity()
-            }
-        }
+        saveState()
+        startTimer()
         updateLiveActivity()
     }
     
     func pause() {
         guard state == .running else { return }
+        
+        if let segmentStart = currentSegmentStartDate {
+            accumulatedTime += Date().timeIntervalSince(segmentStart)
+            currentSegmentStartDate = nil
+        }
+        
         state = .paused
-        timer?.invalidate()
-        timer = nil
+        saveState()
+        stopTimer()
+        recalculateElapsedSeconds()
         locationManager.pauseTracking()
         updateLiveActivity()
     }
     
     func stop() -> Ride? {
-        timer?.invalidate()
-        timer = nil
+        stopTimer()
+        
+        if let segmentStart = currentSegmentStartDate {
+            accumulatedTime += Date().timeIntervalSince(segmentStart)
+            currentSegmentStartDate = nil
+        }
+        recalculateElapsedSeconds()
+        
         endLiveActivity()
         
         var savedRide: Ride? = nil
         if elapsedSeconds > 0 {
             let coords = locationManager.stopTracking()
             savedRide = Ride(
-                distance: locationManager.totalDistance / 1000, // meters to km
+                distance: locationManager.totalDistance / 1000,
                 duration: elapsedSeconds,
                 date: Date(),
                 maxSpeed: locationManager.maxSpeed * 3.6,
@@ -107,8 +149,48 @@ class RideViewModel {
         }
         
         state = .idle
+        clearPersistedState()
         elapsedSeconds = 0
         return savedRide
+    }
+    
+    private func recalculateElapsedSeconds() {
+        var total = accumulatedTime
+        if state == .running, let segmentStart = currentSegmentStartDate {
+            total += Date().timeIntervalSince(segmentStart)
+        }
+        elapsedSeconds = Int(total)
+    }
+    
+    private func startTimer() {
+        stopTimer()
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            Task { @MainActor in
+                if !self.isAutoPaused && self.state == .running {
+                    self.recalculateElapsedSeconds()
+                }
+                
+                if self.elapsedSeconds % 2 == 0 {
+                    self.updateLiveActivity()
+                }
+            }
+        }
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+    }
+    
+    private func saveState() {
+        UserDefaults.standard.set(state.rawValue, forKey: "traxo_rideState")
+    }
+    
+    private func clearPersistedState() {
+        UserDefaults.standard.removeObject(forKey: "traxo_accumulatedTime")
+        UserDefaults.standard.removeObject(forKey: "traxo_segmentStart")
+        UserDefaults.standard.removeObject(forKey: "traxo_rideState")
     }
     
     var formattedTime: String {
@@ -138,10 +220,7 @@ class RideViewModel {
     }
     
     private func startLiveActivity() {
-        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
-            print("Live Activities ae disabled in settings")
-            return
-        }
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else { return }
                 
         let attributes = TraxoActivityAttributes(startDate: Date())
         let initialState = TraxoActivityAttributes.ContentState(
@@ -173,15 +252,27 @@ class RideViewModel {
             isAutoPaused: isAutoPaused
         )
         
+        let content = ActivityContent(state: updatedState, staleDate: nil)
+        
         Task {
-            await activity.update(using: updatedState)
+            await activity.update(content)
         }
     }
         
     private func endLiveActivity() {
         guard let activity = currentActivity else { return }
+        
+        let finalState = TraxoActivityAttributes.ContentState(
+            distanceKm: locationManager.totalDistance / 1000,
+            currentSpeedKmh: 0,
+            elapsedSeconds: elapsedSeconds,
+            isPaused: false,
+            isAutoPaused: false
+        )
+        let finalContent = ActivityContent(state: finalState, staleDate: nil)
+        
         Task {
-            await activity.end(dismissalPolicy: .immediate)
+            await activity.end(finalContent, dismissalPolicy: .immediate)
             self.currentActivity = nil
         }
     }
