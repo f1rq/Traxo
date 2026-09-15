@@ -6,11 +6,58 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		E588B4C4305990C400A30B27 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E588B4C3305990C400A30B27 /* WidgetKit.framework */; };
+		E588B4C6305990C400A30B27 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E588B4C5305990C400A30B27 /* SwiftUI.framework */; };
+		E588B4D7305990C400A30B27 /* TraxoWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = E588B4C1305990C400A30B27 /* TraxoWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		E588B4D5305990C400A30B27 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E50E75212F69E8AB002E7FE4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E588B4C0305990C400A30B27;
+			remoteInfo = TraxoWidgetsExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E588B4DC305990C400A30B27 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				E588B4D7305990C400A30B27 /* TraxoWidgetsExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		E50E75292F69E8AB002E7FE4 /* Traxo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Traxo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		E588B4C1305990C400A30B27 /* TraxoWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TraxoWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E588B4C3305990C400A30B27 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		E588B4C5305990C400A30B27 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E588B4DB305990C400A30B27 /* Exceptions for "TraxoWidgets" folder in "TraxoWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E588B4C0305990C400A30B27 /* TraxoWidgetsExtension */;
+		};
+		E588B4E43059928E00A30B27 /* Exceptions for "Traxo" folder in "TraxoWidgetsExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				App/TraxoActivityAttributes.swift,
+			);
+			target = E588B4C0305990C400A30B27 /* TraxoWidgetsExtension */;
+		};
 		E5ED5BD82F7D931700DD797C /* Exceptions for "Traxo" folder in "Traxo" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -25,8 +72,17 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				E5ED5BD82F7D931700DD797C /* Exceptions for "Traxo" folder in "Traxo" target */,
+				E588B4E43059928E00A30B27 /* Exceptions for "Traxo" folder in "TraxoWidgetsExtension" target */,
 			);
 			path = Traxo;
+			sourceTree = "<group>";
+		};
+		E588B4C7305990C400A30B27 /* TraxoWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E588B4DB305990C400A30B27 /* Exceptions for "TraxoWidgets" folder in "TraxoWidgetsExtension" target */,
+			);
+			path = TraxoWidgets;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -39,6 +95,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E588B4BE305990C400A30B27 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E588B4C6305990C400A30B27 /* SwiftUI.framework in Frameworks */,
+				E588B4C4305990C400A30B27 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -46,6 +111,8 @@
 			isa = PBXGroup;
 			children = (
 				E50E752B2F69E8AB002E7FE4 /* Traxo */,
+				E588B4C7305990C400A30B27 /* TraxoWidgets */,
+				E588B4C2305990C400A30B27 /* Frameworks */,
 				E50E752A2F69E8AB002E7FE4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,8 +121,18 @@
 			isa = PBXGroup;
 			children = (
 				E50E75292F69E8AB002E7FE4 /* Traxo.app */,
+				E588B4C1305990C400A30B27 /* TraxoWidgetsExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E588B4C2305990C400A30B27 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				E588B4C3305990C400A30B27 /* WidgetKit.framework */,
+				E588B4C5305990C400A30B27 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -68,10 +145,12 @@
 				E50E75252F69E8AB002E7FE4 /* Sources */,
 				E50E75262F69E8AB002E7FE4 /* Frameworks */,
 				E50E75272F69E8AB002E7FE4 /* Resources */,
+				E588B4DC305990C400A30B27 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				E588B4D6305990C400A30B27 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				E50E752B2F69E8AB002E7FE4 /* Traxo */,
@@ -83,6 +162,28 @@
 			productReference = E50E75292F69E8AB002E7FE4 /* Traxo.app */;
 			productType = "com.apple.product-type.application";
 		};
+		E588B4C0305990C400A30B27 /* TraxoWidgetsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E588B4D8305990C400A30B27 /* Build configuration list for PBXNativeTarget "TraxoWidgetsExtension" */;
+			buildPhases = (
+				E588B4BD305990C400A30B27 /* Sources */,
+				E588B4BE305990C400A30B27 /* Frameworks */,
+				E588B4BF305990C400A30B27 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				E588B4C7305990C400A30B27 /* TraxoWidgets */,
+			);
+			name = TraxoWidgetsExtension;
+			packageProductDependencies = (
+			);
+			productName = TraxoWidgetsExtension;
+			productReference = E588B4C1305990C400A30B27 /* TraxoWidgetsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -90,11 +191,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 2630;
-				LastUpgradeCheck = 2630;
+				LastSwiftUpdateCheck = 2700;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					E50E75282F69E8AB002E7FE4 = {
 						CreatedOnToolsVersion = 26.3;
+					};
+					E588B4C0305990C400A30B27 = {
+						CreatedOnToolsVersion = 27.0;
 					};
 				};
 			};
@@ -113,12 +217,20 @@
 			projectRoot = "";
 			targets = (
 				E50E75282F69E8AB002E7FE4 /* Traxo */,
+				E588B4C0305990C400A30B27 /* TraxoWidgetsExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		E50E75272F69E8AB002E7FE4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E588B4BF305990C400A30B27 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +247,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E588B4BD305990C400A30B27 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		E588B4D6305990C400A30B27 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E588B4C0305990C400A30B27 /* TraxoWidgetsExtension */;
+			targetProxy = E588B4D5305990C400A30B27 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		E50E75322F69E8AC002E7FE4 /* Debug */ = {
@@ -197,6 +324,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -254,6 +382,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -270,12 +399,17 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Traxo/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Traxo uses background location to record your rides in the background";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Traxo uses location to record your rides";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Traxo needs your location to track your rides.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -284,12 +418,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.f1rq.Traxo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -304,12 +440,17 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Traxo/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.travel";
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Traxo uses background location to record your rides in the background";
+				INFOPLIST_KEY_NSLocationAlwaysUsageDescription = "Traxo uses location to record your rides";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Traxo needs your location to track your rides.";
+				INFOPLIST_KEY_NSSupportsLiveActivities = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -318,8 +459,72 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.f1rq.Traxo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		E588B4D9305990C400A30B27 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29SH79ZM95;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TraxoWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TraxoWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.f1rq.Traxo.TraxoWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E588B4DA305990C400A30B27 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 29SH79ZM95;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = TraxoWidgets/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = TraxoWidgets;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 27.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.f1rq.Traxo.TraxoWidgets;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
@@ -344,6 +549,15 @@
 			buildConfigurations = (
 				E50E75352F69E8AC002E7FE4 /* Debug */,
 				E50E75362F69E8AC002E7FE4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E588B4D8305990C400A30B27 /* Build configuration list for PBXNativeTarget "TraxoWidgetsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E588B4D9305990C400A30B27 /* Debug */,
+				E588B4DA305990C400A30B27 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

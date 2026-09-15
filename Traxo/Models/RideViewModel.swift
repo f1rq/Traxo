@@ -8,6 +8,7 @@
 import Foundation
 import Observation
 import CoreLocation
+import ActivityKit
 
 enum RideState {
     case idle
@@ -20,6 +21,8 @@ class RideViewModel {
     var elapsedSeconds: Int = 0
     var state: RideState = .idle
     var isAutoPaused = false
+    
+    private var currentActivity: Activity<TraxoActivityAttributes>? = nil
     
     private var timer: Timer?
     private(set) var locationManager = LocationManager()
@@ -35,6 +38,7 @@ class RideViewModel {
                 self.isAutoPaused = true
                 self.timer?.invalidate()
                 self.timer = nil
+                self.updateLiveActivity()
             }
         }
         
@@ -44,6 +48,7 @@ class RideViewModel {
                 self.isAutoPaused = false
                 self.timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                     self?.elapsedSeconds += 1
+                    self?.updateLiveActivity()
                 }
             }
         }
@@ -55,6 +60,7 @@ class RideViewModel {
         if state == .idle {
             elapsedSeconds = 0
             locationManager.startNewRide()
+            startLiveActivity()
         } else {
             locationManager.resumeTracking()
         }
@@ -62,7 +68,12 @@ class RideViewModel {
         state = .running
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.elapsedSeconds += 1
+            
+            if (self?.elapsedSeconds ?? 0) % 2 == 0 {
+                self?.updateLiveActivity()
+            }
         }
+        updateLiveActivity()
     }
     
     func pause() {
@@ -71,11 +82,13 @@ class RideViewModel {
         timer?.invalidate()
         timer = nil
         locationManager.pauseTracking()
+        updateLiveActivity()
     }
     
     func stop() -> Ride? {
         timer?.invalidate()
         timer = nil
+        endLiveActivity()
         
         var savedRide: Ride? = nil
         if elapsedSeconds > 0 {
@@ -122,5 +135,54 @@ class RideViewModel {
         let distance = locationManager.totalDistance / 1000
         let duration = Double(elapsedSeconds) / 3600
         return distance / duration
+    }
+    
+    private func startLiveActivity() {
+        guard ActivityAuthorizationInfo().areActivitiesEnabled else {
+            print("Live Activities ae disabled in settings")
+            return
+        }
+                
+        let attributes = TraxoActivityAttributes(startDate: Date())
+        let initialState = TraxoActivityAttributes.ContentState(
+            distanceKm: locationManager.totalDistance / 1000,
+            currentSpeedKmh: locationManager.currentSpeed * 3.6,
+            elapsedSeconds: elapsedSeconds,
+            isPaused: false,
+            isAutoPaused: false
+        )
+        
+        do {
+            currentActivity = try Activity.request(
+                attributes: attributes,
+                content: .init(state: initialState, staleDate: nil)
+            )
+        } catch {
+            print("Failed to start Live Activity: \(error.localizedDescription)")
+        }
+    }
+    
+    private func updateLiveActivity() {
+        guard let activity = currentActivity else { return }
+        
+        let updatedState = TraxoActivityAttributes.ContentState(
+            distanceKm: locationManager.totalDistance / 1000,
+            currentSpeedKmh: locationManager.currentSpeed * 3.6,
+            elapsedSeconds: elapsedSeconds,
+            isPaused: state == .paused,
+            isAutoPaused: isAutoPaused
+        )
+        
+        Task {
+            await activity.update(using: updatedState)
+        }
+    }
+        
+    private func endLiveActivity() {
+        guard let activity = currentActivity else { return }
+        Task {
+            await activity.end(dismissalPolicy: .immediate)
+            self.currentActivity = nil
+        }
     }
 }
