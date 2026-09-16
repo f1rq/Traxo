@@ -115,7 +115,7 @@ struct RideView: View {
             }
             .padding()
         }
-        .navigationTitle("Ride")
+        .navigationTitle(rideName)
         .navigationBarTitleDisplayMode(.inline)
     }
 }
