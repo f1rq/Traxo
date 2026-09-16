@@ -15,6 +15,6 @@ struct TraxoApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: Ride.self)
+        .modelContainer(for: [Ride.self, Vehicle.self])
     }
 }

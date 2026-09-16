@@ -20,6 +20,7 @@ class Ride {
     var avgSpeed: Double
     var rideLatitudes: [Double]
     var rideLongitudes: [Double]
+    var vehicle: Vehicle?
     
     init(distance: Double, duration: Int, date: Date, maxSpeed: Double, avgSpeed: Double, desc: String = "", rideLatitudes: [Double] = [], rideLongitudes: [Double] = []) {
         self.title = "Untitled ride"
