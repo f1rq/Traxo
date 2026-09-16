@@ -9,10 +9,14 @@ import SwiftUI
 
 import SwiftUI
 import MapKit
+import SwiftData
 
 struct RideView: View {
     let ride: Ride
 
+    @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
+    
     @State private var editingTitle = false
     @State private var rideName: String
     @FocusState private var titleFocused: Bool
@@ -20,6 +24,8 @@ struct RideView: View {
     @State private var editingDesc = false
     @State private var rideDesc: String
     @FocusState private var descFocused: Bool
+    
+    @State private var showDeleteConfirmation = false
     
     init(ride: Ride) {
         self.ride = ride
@@ -115,8 +121,33 @@ struct RideView: View {
             }
             .padding()
         }
-        .navigationTitle(rideName)
+        .navigationTitle(rideName.isEmpty ? "Untitled ride" : rideName)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(role: .destructive) {
+                    showDeleteConfirmation = true
+                } label: {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.red)
+                }
+                .confirmationDialog(
+                    "Delete Ride?",
+                    isPresented: Binding(
+                        get: { showDeleteConfirmation },
+                        set: { showDeleteConfirmation = $0 }
+                    ),
+                    titleVisibility: .visible,
+                ) {
+                    Button("Delete", role: .destructive) {
+                        modelContext.delete(ride)
+                        dismiss()
+                    }
+                } message: {
+                    Text("Are you sure you want to delete this ride? This action cannot be undone.")
+                }
+            }
+        }
     }
 }
 
