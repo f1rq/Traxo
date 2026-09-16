@@ -21,7 +21,6 @@ enum RideState: String, Codable {
 class RideViewModel {
     var elapsedSeconds: Int = 0
     var state: RideState = .idle
-    var isAutoPaused = false
     
     private var currentActivity: Activity<TraxoActivityAttributes>? = nil
     private var timer: Timer?
@@ -38,14 +37,12 @@ class RideViewModel {
     }
     
     init() {
-        setupCallbacks()
         restoreActiveSession()
     }
     
     private func restoreActiveSession() {
         if let existingActivity = Activity<TraxoActivityAttributes>.activities.first {
             self.currentActivity = existingActivity
-            
             let savedStateRaw = UserDefaults.standard.string(forKey: "traxo_rideState") ?? "running"
             self.state = RideState(rawValue: savedStateRaw) ?? .running
             
@@ -58,32 +55,7 @@ class RideViewModel {
             clearPersistedState()
         }
     }
-    
-    private func setupCallbacks() {
-        locationManager.onAutoPause = { [weak self] in
-            guard let self else { return }
-            Task { @MainActor in
-                self.isAutoPaused = true
-                self.stopTimer()
-                self.updateLiveActivity()
-            }
-        }
-        
-        locationManager.onAutoResume = { [weak self] in
-            guard let self else { return }
-            Task { @MainActor in
-                self.isAutoPaused = false
-                if self.state == .running {
-                    if self.currentSegmentStartDate == nil {
-                        self.currentSegmentStartDate = Date()
-                    }
-                    self.startTimer()
-                }
-                self.updateLiveActivity()
-            }
-        }
-    }
-    
+
     func start() {
         guard state != .running else { return }
         
@@ -167,8 +139,12 @@ class RideViewModel {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             guard let self else { return }
             Task { @MainActor in
-                if !self.isAutoPaused && self.state == .running {
+                if self.state == .running {
                     self.recalculateElapsedSeconds()
+                    
+                    if self.locationManager.currentSpeed > 0.6 {
+                        self.locationManager.movingSeconds += 1
+                    }
                 }
                 
                 if self.elapsedSeconds % 2 == 0 {
@@ -213,10 +189,11 @@ class RideViewModel {
     }
     
     var avgSpeed: Double {
-        guard elapsedSeconds > 0 else { return 0 }
+        let movingSecs = locationManager.movingSeconds
+        guard movingSecs > 0 else { return 0 }
         let distance = locationManager.totalDistance / 1000
-        let duration = Double(elapsedSeconds) / 3600
-        return distance / duration
+        let durationHours = Double(movingSecs) / 3600
+        return distance / durationHours
     }
     
     private func startLiveActivity() {
@@ -227,8 +204,7 @@ class RideViewModel {
             distanceKm: locationManager.totalDistance / 1000,
             currentSpeedKmh: locationManager.currentSpeed * 3.6,
             elapsedSeconds: elapsedSeconds,
-            isPaused: false,
-            isAutoPaused: false
+            isPaused: false
         )
         
         do {
@@ -237,7 +213,7 @@ class RideViewModel {
                 content: .init(state: initialState, staleDate: nil)
             )
         } catch {
-            print("Failed to start Live Activity: \(error.localizedDescription)")
+                print("Failed to start Live Activity: \(error.localizedDescription)")
         }
     }
     
@@ -248,8 +224,7 @@ class RideViewModel {
             distanceKm: locationManager.totalDistance / 1000,
             currentSpeedKmh: locationManager.currentSpeed * 3.6,
             elapsedSeconds: elapsedSeconds,
-            isPaused: state == .paused,
-            isAutoPaused: isAutoPaused
+            isPaused: state == .paused
         )
         
         let content = ActivityContent(state: updatedState, staleDate: nil)
@@ -266,14 +241,13 @@ class RideViewModel {
             distanceKm: locationManager.totalDistance / 1000,
             currentSpeedKmh: 0,
             elapsedSeconds: elapsedSeconds,
-            isPaused: false,
-            isAutoPaused: false
+            isPaused: false
         )
         let finalContent = ActivityContent(state: finalState, staleDate: nil)
+        self.currentActivity = nil
         
         Task {
             await activity.end(finalContent, dismissalPolicy: .immediate)
-            self.currentActivity = nil
         }
     }
 }

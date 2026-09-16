@@ -1,13 +1,12 @@
 import ActivityKit
 import Foundation
 
-struct TraxoActivityAttributes: ActivityAttributes {
-    public struct ContentState: Codable, Hashable {
+nonisolated struct TraxoActivityAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable, Sendable {
         var distanceKm: Double
         var currentSpeedKmh: Double
         var elapsedSeconds: Int
         var isPaused: Bool
-        var isAutoPaused: Bool
     }
     
     var startDate: Date

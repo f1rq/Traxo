@@ -13,16 +13,13 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     private let manager = CLLocationManager()
     private var isRecording = false
     
-    private var autoPauseTimer: Timer?
-    var onAutoPause: (() -> Void)?
-    var onAutoResume: (() -> Void)?
-    var isAutoPaused = false
-    
     var currentLocation: CLLocation?
     var routeCoordinates: [CLLocationCoordinate2D] = []
     var totalDistance: Double = 0
     var currentSpeed: Double = 0
     var maxSpeed: Double = 0
+    
+    var movingSeconds: Int = 0
     
     override init() {
         super.init()
@@ -40,6 +37,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         totalDistance = 0
         currentSpeed = 0
         maxSpeed = 0
+        movingSeconds = 0
         currentLocation = nil
         isRecording = true
         manager.startUpdatingLocation()
@@ -60,10 +58,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     
     func stopTracking() -> [CLLocationCoordinate2D] {
         isRecording = false
-        isAutoPaused = false
         currentSpeed = 0
-        autoPauseTimer?.invalidate()
-        autoPauseTimer = nil
         manager.stopUpdatingLocation()
         return routeCoordinates
     }
@@ -90,28 +85,5 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         
         currentLocation = newLocation
         routeCoordinates.append(newLocation.coordinate)
-        
-        let speedKmh = newLocation.speed * 3.6
-        
-        if speedKmh > 5 && isAutoPaused {
-            isAutoPaused = false
-            autoPauseTimer?.invalidate()
-            autoPauseTimer = nil
-            onAutoResume?()
-        } else if speedKmh < 3 && !isAutoPaused {
-            if autoPauseTimer == nil {
-                autoPauseTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [ weak self ] _ in
-                    guard let self = self else { return }
-                    self.isAutoPaused = true
-                    self.autoPauseTimer = nil
-                    self.onAutoPause?()
-                }
-            }
-        } else if speedKmh >= 3 {
-            autoPauseTimer?.invalidate()
-            autoPauseTimer = nil
-        }
-        
-        print("🚴 speed: \(String(format: "%.1f", speedKmh)) km/h, isAutoPaused: \(isAutoPaused), timerActive: \(autoPauseTimer != nil)")
     }
 }

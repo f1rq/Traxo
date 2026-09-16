@@ -17,9 +17,9 @@ struct TraxoLiveActivity: Widget {
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
                         Circle()
-                            .fill(context.state.isPaused ? Color.orange : (context.state.isAutoPaused ? Color.yellow : Color.green))
+                            .fill(context.state.isPaused ? Color.orange : Color.green)
                             .frame(width: 8, height: 8)
-                        Text(context.state.isPaused ? "PAUSED" : (context.state.isAutoPaused ? "AUTO-PAUSED" : "RECORDING"))
+                        Text(context.state.isPaused ? "PAUSED" : "RECORDING")
                             .font(.system(size: 10, weight: .bold))
                             .foregroundStyle(.secondary)
                     }
@@ -62,9 +62,9 @@ struct TraxoLiveActivity: Widget {
                     VStack(alignment: .leading, spacing: 2) {
                         HStack(spacing: 6) {
                             Circle()
-                                .fill(context.state.isPaused ? Color.orange : (context.state.isAutoPaused ? Color.yellow : Color.green))
+                                .fill(context.state.isPaused ? Color.orange : Color.green)
                                 .frame(width: 6, height: 6)
-                            Text(context.state.isPaused ? "PAUSED" : (context.state.isAutoPaused ? "AUTO-PAUSED" : "RECORDING"))
+                            Text(context.state.isPaused ? "PAUSED" : "RECORDING")
                                 .font(.system(size: 9, weight: .bold))
                                 .foregroundStyle(.secondary)
                         }
@@ -142,16 +142,14 @@ struct TraxoLiveActivity: Widget {
         distanceKm: 14.2,
         currentSpeedKmh: 78,
         elapsedSeconds: 1245,
-        isPaused: false,
-        isAutoPaused: false
+        isPaused: false
     )
     
     TraxoActivityAttributes.ContentState(
         distanceKm: 22.0,
         currentSpeedKmh: 0,
         elapsedSeconds: 2100,
-        isPaused: true,
-        isAutoPaused: false
+        isPaused: true
     )
 }
 
@@ -162,16 +160,14 @@ struct TraxoLiveActivity: Widget {
         distanceKm: 14.2,
         currentSpeedKmh: 78,
         elapsedSeconds: 1245,
-        isPaused: false,
-        isAutoPaused: false
+        isPaused: false
     )
     
     TraxoActivityAttributes.ContentState(
         distanceKm: 22.0,
         currentSpeedKmh: 0,
         elapsedSeconds: 2100,
-        isPaused: true,
-        isAutoPaused: false
+        isPaused: true
     )
 }
 
@@ -182,7 +178,6 @@ struct TraxoLiveActivity: Widget {
         distanceKm: 14.2,
         currentSpeedKmh: 78,
         elapsedSeconds: 1245,
-        isPaused: false,
-        isAutoPaused: false
+        isPaused: false
     )
 }
